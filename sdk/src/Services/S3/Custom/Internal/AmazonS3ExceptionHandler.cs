@@ -85,12 +85,11 @@ namespace Amazon.S3.Internal
         /// <param name="exception"></param>
         protected virtual void HandleException(IExecutionContext executionContext, Exception exception)
         {
-
             var putObjectRequest = executionContext.RequestContext.OriginalRequest as PutObjectRequest;
             if (putObjectRequest != null)
             {
                 // If InputStream was a HashStream, compare calculated hash to returned etag
-                HashStream hashStream = putObjectRequest.InputStream as HashStream;
+                var hashStream = putObjectRequest.InputStream as HashStream;
                 if (hashStream != null)
                 {
                     // Set InputStream to its original value
@@ -102,7 +101,7 @@ namespace Amazon.S3.Internal
             if (uploadPartRequest != null)
             {
                 // If InputStream was a HashStream, compare calculated hash to returned etag
-                HashStream hashStream = uploadPartRequest.InputStream as HashStream;
+                var hashStream = uploadPartRequest.InputStream as HashStream;
                 if (hashStream != null)
                 {
                     // Set InputStream to its original value

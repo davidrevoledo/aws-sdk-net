@@ -131,14 +131,14 @@ namespace Amazon.S3
             }
             else
             {
-                Amazon.S3.Internal.S3Signer.SignRequest(irequest, metrics, immutableCredentials.AccessKey, immutableCredentials.SecretKey);
+                Internal.S3Signer.SignRequest(irequest, metrics, immutableCredentials.AccessKey, immutableCredentials.SecretKey);
                 authorization = irequest.Headers[HeaderKeys.AuthorizationHeader];
                 authorization = authorization.Substring(authorization.IndexOf(":", StringComparison.Ordinal) + 1);
                 authorization = "&Signature=" + AmazonS3Util.UrlEncode(authorization, false);
             }
 
-            Uri url = AmazonServiceClient.ComposeUrl(irequest);
-            string result = url.AbsoluteUri + authorization;
+            var url = AmazonServiceClient.ComposeUrl(irequest);
+            var result = url.AbsoluteUri + authorization;
 
             Protocol protocol = DetermineProtocol();
             if (request.Protocol != protocol)
@@ -240,7 +240,7 @@ namespace Amazon.S3
                 queryParameters.Add("response-content-encoding", responseHeaderOverrides.ContentEncoding);
 
             // Add custom parameters to be included and signed
-            foreach (string k in getPreSignedUrlRequest.Parameters.Keys)
+            foreach (var k in getPreSignedUrlRequest.Parameters.Keys)
                 queryParameters.Add(k, getPreSignedUrlRequest.Parameters[k]);
 
             request.ResourcePath = uriResourcePath.ToString();
@@ -257,8 +257,8 @@ namespace Amazon.S3
 
         private Protocol DetermineProtocol()
         {
-            string serviceUrl = Config.DetermineServiceURL();
-            Protocol protocol = serviceUrl.StartsWith("https", StringComparison.OrdinalIgnoreCase) ? Protocol.HTTPS : Protocol.HTTP;
+            var serviceUrl = Config.DetermineServiceURL();
+            var protocol = serviceUrl.StartsWith("https", StringComparison.OrdinalIgnoreCase) ? Protocol.HTTPS : Protocol.HTTP;
             return protocol;
         }
 

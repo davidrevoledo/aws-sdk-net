@@ -86,15 +86,13 @@ namespace Amazon.S3
                             @"Specify a region using AmazonS3Config.RegionEndpoint or AmazonS3Config.AuthenticationRegion" +
                             " to use S3 accelerate.");
                 }
-                else
-                {
-                    if (this.RegionEndpoint == null && !string.IsNullOrEmpty(this.AuthenticationRegion))
-                    {
-                        this.RegionEndpoint = RegionEndpoint.GetBySystemName(this.AuthenticationRegion);
-                    }
 
-                    this.UseAccelerateEndpoint = true;
+                if (this.RegionEndpoint == null && !string.IsNullOrEmpty(this.AuthenticationRegion))
+                {
+                    this.RegionEndpoint = RegionEndpoint.GetBySystemName(this.AuthenticationRegion);
                 }
+
+                this.UseAccelerateEndpoint = true;
             }
         }
 

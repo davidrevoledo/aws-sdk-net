@@ -156,7 +156,7 @@ namespace Amazon.S3.Internal
                 }
 
                 var originalRequest = request.OriginalRequest;
-                bool accelerateSupportedApi = !UnsupportedAccelerateRequestTypes.Contains(originalRequest.GetType());
+                var accelerateSupportedApi = !UnsupportedAccelerateRequestTypes.Contains(originalRequest.GetType());
 
                 // Skip requests which are not supported
                 if (accelerateSupportedApi)
@@ -308,12 +308,7 @@ namespace Amazon.S3.Internal
         // Returns true if string toCheck contains any of strings in values
         private static bool StringContainsAny(string toCheck, string[] values, StringComparison stringComparison)
         {
-            foreach (var value in values)
-            {
-                if (toCheck.IndexOf(value, stringComparison) >= 0)
-                    return true;
-            }
-            return false;
+            return values.Any(value => toCheck.IndexOf(value, stringComparison) >= 0);
         }
     }
 }

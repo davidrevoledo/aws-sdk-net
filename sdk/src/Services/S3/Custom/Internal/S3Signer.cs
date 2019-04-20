@@ -56,15 +56,12 @@ namespace Amazon.S3.Internal
         private static void RegionDetectionUpdater(IRequest request)
         {
             AmazonS3Uri s3Uri;
-            if (AmazonS3Uri.TryParseAmazonS3Uri(request.Endpoint, out s3Uri))
+            if (AmazonS3Uri.TryParseAmazonS3Uri(request.Endpoint, out s3Uri) && s3Uri.Bucket != null)
             {
-                if (s3Uri.Bucket != null)
+                RegionEndpoint cachedRegion;
+                if (BucketRegionDetector.BucketRegionCache.TryGetValue(s3Uri.Bucket, out cachedRegion))
                 {
-                    RegionEndpoint cachedRegion;
-                    if (BucketRegionDetector.BucketRegionCache.TryGetValue(s3Uri.Bucket, out cachedRegion))
-                    {
-                        request.AlternateEndpoint = cachedRegion;
-                    }
+                    request.AlternateEndpoint = cachedRegion;
                 }
             }
         }

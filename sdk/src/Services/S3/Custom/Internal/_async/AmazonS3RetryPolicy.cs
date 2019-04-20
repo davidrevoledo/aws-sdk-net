@@ -39,29 +39,25 @@ namespace Amazon.S3.Internal
             {
                 return syncResult.Value;
             }
-            else
-            {
-                var serviceException = exception as AmazonServiceException;
-                string correctedRegion = null;
-                AmazonS3Uri s3BucketUri;
-                if (AmazonS3Uri.TryParseAmazonS3Uri(executionContext.RequestContext.Request.Endpoint, out s3BucketUri))
-                {
-                    var credentials = executionContext.RequestContext.ImmutableCredentials;
-                    correctedRegion = await BucketRegionDetector.DetectMismatchWithHeadBucketFallbackAsync(s3BucketUri, serviceException, credentials).ConfigureAwait(false);
-                }
 
-                if (correctedRegion == null)
-                {
-                    return base.RetryForException(executionContext, exception);
-                }
-                else
-                {
-                    // change authentication region of request and signal the handler to sign again with the new region
-                    executionContext.RequestContext.Request.AuthenticationRegion = correctedRegion;
-                    executionContext.RequestContext.IsSigned = false;
-                    return true;
-                }
+            var serviceException = exception as AmazonServiceException;
+            string correctedRegion = null;
+            AmazonS3Uri s3BucketUri;
+            if (AmazonS3Uri.TryParseAmazonS3Uri(executionContext.RequestContext.Request.Endpoint, out s3BucketUri))
+            {
+                var credentials = executionContext.RequestContext.ImmutableCredentials;
+                correctedRegion = await BucketRegionDetector.DetectMismatchWithHeadBucketFallbackAsync(s3BucketUri, serviceException, credentials).ConfigureAwait(false);
             }
+
+            if (correctedRegion == null)
+            {
+                return base.RetryForException(executionContext, exception);
+            }
+
+            // change authentication region of request and signal the handler to sign again with the new region
+            executionContext.RequestContext.Request.AuthenticationRegion = correctedRegion;
+            executionContext.RequestContext.IsSigned = false;
+            return true;
         }
     }
 }

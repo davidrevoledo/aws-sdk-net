@@ -14,8 +14,6 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Text;
-
 
 namespace Amazon.Auth.AccessControlPolicy
 {
@@ -197,7 +195,7 @@ namespace Amazon.Auth.AccessControlPolicy
             {
                 this.actions = new List<ActionIdentifier>();
             }
-            foreach (ActionIdentifier element in actions)
+            foreach (var element in actions)
             {
                 this.actions.Add(element);
             }
@@ -247,7 +245,7 @@ namespace Amazon.Auth.AccessControlPolicy
             {
                 this.resources = new List<Resource>();
             }
-            foreach(Resource element in resources)
+            foreach(var element in resources)
             {
                 this.resources.Add(element);
             }
@@ -311,7 +309,7 @@ namespace Amazon.Auth.AccessControlPolicy
             {
                 this.Conditions = new List<Condition>();
             }
-            foreach(Condition element in conditions)
+            foreach(var element in conditions)
             {
                 this.Conditions.Add(element);
             }
@@ -353,7 +351,7 @@ namespace Amazon.Auth.AccessControlPolicy
             {
                 this.principals = new List<Principal>();
             }
-            foreach (Principal element in principals)
+            foreach (var element in principals)
             {
                 this.principals.Add(element);
             }

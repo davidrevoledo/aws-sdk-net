@@ -12,9 +12,6 @@
  * express or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Amazon.Auth.AccessControlPolicy.ActionIdentifiers
 {
@@ -25,7 +22,6 @@ namespace Amazon.Auth.AccessControlPolicy.ActionIdentifiers
     public static class ZocaloActionIdentifiers
     {
         public static readonly ActionIdentifier AllZocaloActions = new ActionIdentifier("zocalo:*");
-
         public static readonly ActionIdentifier ActivateUser = new ActionIdentifier("zocalo:ActivateUser");
         public static readonly ActionIdentifier AddUserToGroup = new ActionIdentifier("zocalo:AddUserToGroup");
         public static readonly ActionIdentifier CheckAlias = new ActionIdentifier("zocalo:CheckAlias");

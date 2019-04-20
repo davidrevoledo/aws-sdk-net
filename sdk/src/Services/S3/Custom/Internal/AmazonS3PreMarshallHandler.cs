@@ -84,7 +84,6 @@ namespace Amazon.S3.Internal
             var request = executionContext.RequestContext.OriginalRequest;
             var config = executionContext.RequestContext.ClientConfig;
 
-
             var putObjectRequest = request as PutObjectRequest;
             if (putObjectRequest != null)
             {
@@ -102,23 +101,20 @@ namespace Amazon.S3.Internal
                     string ext = null;
                     if (!string.IsNullOrEmpty(putObjectRequest.FilePath))
                         ext = AWSSDKUtils.GetExtension(putObjectRequest.FilePath);
-                    if (String.IsNullOrEmpty(ext) && putObjectRequest.IsSetKey())
+                    if (string.IsNullOrEmpty(ext) && putObjectRequest.IsSetKey())
                     {
                         ext = AWSSDKUtils.GetExtension(putObjectRequest.Key);
                     }
-                    if (!String.IsNullOrEmpty(ext))
+                    if (!string.IsNullOrEmpty(ext))
                     // Use the extension to get the mime-type
                     {
                         putObjectRequest.Headers.ContentType = AmazonS3Util.MimeTypeFromExtension(ext);
                     }
                 }
 
-                if (putObjectRequest.InputStream != null)
+                if (putObjectRequest.InputStream != null && putObjectRequest.AutoResetStreamPosition && putObjectRequest.InputStream.CanSeek)
                 {
-                    if (putObjectRequest.AutoResetStreamPosition && putObjectRequest.InputStream.CanSeek)
-                    {
-                        putObjectRequest.InputStream.Seek(0, SeekOrigin.Begin);
-                    }
+                    putObjectRequest.InputStream.Seek(0, SeekOrigin.Begin);
                 }
 
                 if (!string.IsNullOrEmpty(putObjectRequest.FilePath))
@@ -183,18 +179,15 @@ namespace Amazon.S3.Internal
             }
 
             var initMultipartRequest = request as InitiateMultipartUploadRequest;
-            if (initMultipartRequest != null)
+            if (initMultipartRequest != null && !initMultipartRequest.Headers.IsSetContentType())
             {
-                if (!initMultipartRequest.Headers.IsSetContentType())
-                {
-                    // Get the extension of the object key.
-                    string ext = AWSSDKUtils.GetExtension(initMultipartRequest.Key);
+                // Get the extension of the object key.
+                var ext = AWSSDKUtils.GetExtension(initMultipartRequest.Key);
 
-                    // Use the extension to get the mime-type
-                    if (!String.IsNullOrEmpty(ext))
-                    {
-                        initMultipartRequest.Headers.ContentType = AmazonS3Util.MimeTypeFromExtension(ext);
-                    }
+                // Use the extension to get the mime-type
+                if (!string.IsNullOrEmpty(ext))
+                {
+                    initMultipartRequest.Headers.ContentType = AmazonS3Util.MimeTypeFromExtension(ext);
                 }
             }
         }

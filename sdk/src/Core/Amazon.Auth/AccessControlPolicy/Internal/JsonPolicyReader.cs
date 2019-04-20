@@ -12,11 +12,8 @@
  * express or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Text;
 
+using System.Collections.Generic;
 using ThirdParty.Json.LitJson;
 
 namespace Amazon.Auth.AccessControlPolicy.Internal
@@ -28,20 +25,20 @@ namespace Amazon.Auth.AccessControlPolicy.Internal
     {
         public static Policy ReadJsonStringToPolicy(string jsonString)
         {
-            Policy policy = new Policy();
-            JsonData jPolicy = JsonMapper.ToObject(jsonString);
+            var policy = new Policy();
+            var jPolicy = JsonMapper.ToObject(jsonString);
 
             if (jPolicy[JsonDocumentFields.POLICY_ID] != null && jPolicy[JsonDocumentFields.POLICY_ID].IsString)
             {
                 policy.Id = (string)jPolicy[JsonDocumentFields.POLICY_ID];
             }
 
-            JsonData jStatements = jPolicy[JsonDocumentFields.STATEMENT] as JsonData;
+            var jStatements = jPolicy[JsonDocumentFields.STATEMENT] as JsonData;
             if (jStatements != null && jStatements.IsArray)
             {
                 foreach (JsonData jStatement in jStatements)
                 {
-                    Statement statement = convertStatement(jStatement);
+                    var statement = convertStatement(jStatement);
                     if (statement != null)
                     {
                         policy.Statements.Add(statement);
@@ -57,8 +54,7 @@ namespace Amazon.Auth.AccessControlPolicy.Internal
             if (jStatement[JsonDocumentFields.STATEMENT_EFFECT] == null || !jStatement[JsonDocumentFields.STATEMENT_EFFECT].IsString)
                 return null;
 
-
-            string jEffect = (string)jStatement[JsonDocumentFields.STATEMENT_EFFECT];
+            var jEffect = (string)jStatement[JsonDocumentFields.STATEMENT_EFFECT];
             Statement.StatementEffect effect;
             if (JsonDocumentFields.EFFECT_VALUE_ALLOW.Equals(jEffect))
                 effect = Statement.StatementEffect.Allow;
@@ -80,7 +76,7 @@ namespace Amazon.Auth.AccessControlPolicy.Internal
 
         private static void convertPrincipals(Statement statement, JsonData jStatement)
         {
-            JsonData jPrincipals = jStatement[JsonDocumentFields.PRINCIPAL];
+            var jPrincipals = jStatement[JsonDocumentFields.PRINCIPAL];
             if (jPrincipals == null)
             {
                 return;
@@ -135,7 +131,7 @@ namespace Amazon.Auth.AccessControlPolicy.Internal
 
         private static void convertActions(Statement statement, JsonData jStatement)
         {
-            JsonData jActions = jStatement[JsonDocumentFields.ACTION];
+            var jActions = jStatement[JsonDocumentFields.ACTION];
             if (jActions == null)
             {
                 return;

@@ -20,19 +20,16 @@
  *
  */
 using System;
-using System.Collections.Generic;
-using System.Text;
 
-using Amazon.S3;
 using Amazon.S3.Model;
 
 namespace Amazon.S3.Transfer.Internal
 {
     internal partial class AbortMultipartUploadsCommand : BaseCommand
     {
-        IAmazonS3 _s3Client;
-        string _bucketName; 
-        DateTime _initiatedDate;
+        readonly IAmazonS3 _s3Client;
+        readonly string _bucketName;
+        readonly DateTime _initiatedDate;
 
         internal AbortMultipartUploadsCommand(IAmazonS3 s3Client, string bucketName, DateTime initiateDate)
         {
@@ -42,26 +39,26 @@ namespace Amazon.S3.Transfer.Internal
         }
 
         private ListMultipartUploadsRequest ConstructListMultipartUploadsRequest(ListMultipartUploadsResponse listResponse)
+        {
+            var listRequest = new ListMultipartUploadsRequest
             {
-                ListMultipartUploadsRequest listRequest = new ListMultipartUploadsRequest()
-                {
-                    BucketName = this._bucketName,
-                    KeyMarker = listResponse.KeyMarker,
-                    UploadIdMarker = listResponse.NextUploadIdMarker,
-                };
-                ((Amazon.Runtime.Internal.IAmazonWebServiceRequest)listRequest).AddBeforeRequestHandler(this.RequestEventHandler);
+                BucketName = this._bucketName,
+                KeyMarker = listResponse.KeyMarker,
+                UploadIdMarker = listResponse.NextUploadIdMarker,
+            };
+            ((Runtime.Internal.IAmazonWebServiceRequest)listRequest).AddBeforeRequestHandler(this.RequestEventHandler);
             return listRequest;
         }
 
         private AbortMultipartUploadRequest ConstructAbortMultipartUploadRequest(MultipartUpload upload)
-                    {
-                        var abortRequest = new AbortMultipartUploadRequest()
-                        {
-                            BucketName = this._bucketName,
-                            Key = upload.Key,
-                            UploadId = upload.UploadId,
-                        };
-                        ((Amazon.Runtime.Internal.IAmazonWebServiceRequest)abortRequest).AddBeforeRequestHandler(this.RequestEventHandler);
+        {
+            var abortRequest = new AbortMultipartUploadRequest()
+            {
+                BucketName = this._bucketName,
+                Key = upload.Key,
+                UploadId = upload.UploadId,
+            };
+            ((Runtime.Internal.IAmazonWebServiceRequest)abortRequest).AddBeforeRequestHandler(this.RequestEventHandler);
             return abortRequest;
         }
     }
